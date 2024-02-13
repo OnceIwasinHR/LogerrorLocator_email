@@ -1,0 +1,39 @@
+# Specify your email settings
+$smtpServer = "your-smtp-server.com"
+$smtpFrom = "your-email@domain.com"
+$smtpTo = "test@gmail.com"
+$messageSubject = "Error in Log File"
+$messageBody = "Error recorded in log file at: {0}`n{1}"
+
+# Specify the folder path
+$logFolderPath = "D:\Test"
+
+# Infinite loop to continuously monitor the folder
+while ($true) {
+    # Get the latest log file based on the last write time
+    $latestLogFile = Get-ChildItem $logFolderPath | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+    # Check if the file is different from the one we processed last time
+    if ($latestLogFile.FullName -ne $lastProcessedFile) {
+        # Read the content of the log file
+        $logContent = Get-Content $latestLogFile.FullName
+
+        # Extract errors (modify this regex based on your log format)
+        $errors = $logContent | Select-String -Pattern "ERROR" -AllMatches | ForEach-Object { $_.Matches.Value }
+
+        # Send email if there are errors
+        if ($errors.Count -gt 0) {
+            $errorDetails = $errors -join "`n"
+            $message = $messageBody -f $latestLogFile.LastWriteTime, $errorDetails
+
+            # Send email
+            Send-MailMessage -SmtpServer $smtpServer -From $smtpFrom -To $smtpTo -Subject $messageSubject -Body $message
+        }
+
+        # Update the last processed file
+        $lastProcessedFile = $latestLogFile.FullName
+    }
+
+    # Sleep for a while before checking again (adjust as needed)
+    Start-Sleep -Seconds 60
+}
