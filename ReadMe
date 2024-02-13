@@ -1,0 +1,28 @@
+To set up the PowerShell script to run on its own, you'll need to follow these steps:
+
+Save the Script: Save the PowerShell script to a file with a .ps1 extension. For example, you could name it MonitorLogFile.ps1.
+
+Configure Email Settings: Replace the placeholder values in the script with your actual email server settings ($smtpServer, $smtpFrom, and $smtpTo). Ensure that you have permission to send emails through the specified SMTP server.
+
+Modify Log Folder Path: If your log files are stored in a different folder than D:\Test, modify the $logFolderPath variable to point to the correct folder.
+
+Adjust Error Detection: If the log file format or error detection logic differs from the provided script (e.g., if errors are identified differently in your log files), modify the error extraction logic accordingly.
+
+Run PowerShell as Administrator: Open PowerShell as an administrator. This is necessary for setting the execution policy and running the script.
+
+Set Execution Policy: By default, PowerShell restricts running scripts. You may need to set the execution policy to allow script execution. You can do this by running the following command:
+
+javascript
+Copy code
+Set-ExecutionPolicy RemoteSigned
+Choose the appropriate execution policy based on your security requirements.
+
+Run the Script: Navigate to the directory where the script is saved using PowerShell and run the script by entering its name preceded by .\. For example:
+
+Copy code
+.\MonitorLogFile.ps1
+Leave the Script Running: Once the script is running, it will continuously monitor the specified folder for changes in log files and automatically send emails when errors are detected.
+
+Considerations for Running Indefinitely: Keep in mind that the script, as provided, runs indefinitely. You may want to consider implementing additional mechanisms for error handling, logging, or terminating the script if needed.
+
+Testing and Monitoring: Test the script thoroughly to ensure it behaves as expected. Monitor the email notifications to verify that errors are being detected and emails are sent appropriately.
